@@ -1,4 +1,4 @@
-package com.masai.controller;
+package com.cabway.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.cabway.exceptions.AdminException;
 import com.cabway.model.Admin;
-import com.masai.services.AdminService;
+import com.cabway.services.AdminService;
 
 @RestController
 //@RequestMapping("/adminService")
