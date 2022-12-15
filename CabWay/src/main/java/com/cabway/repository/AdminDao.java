@@ -1,4 +1,4 @@
-package com.masai.repository;
+package com.cabway.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

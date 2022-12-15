@@ -1,11 +1,11 @@
-package com.masai.services;
+package com.cabway.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cabway.exceptions.AdminException;
 import com.cabway.model.Admin;
-import com.masai.repository.AdminDao;
+import com.cabway.repository.AdminDao;
 
 @Service
 public class AdminServiceImpl implements AdminService{
