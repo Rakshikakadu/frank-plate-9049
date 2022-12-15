@@ -1,12 +1,8 @@
 package com.cabway.model;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,7 +12,6 @@ import lombok.ToString;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
 public class Cab {
 	
 	@Id
@@ -25,6 +20,4 @@ public class Cab {
 	private String carType;
 	private Float perKmRate;
 	
-	@OneToOne(cascade = CascadeType.ALL)
-	private Driver driver;
 }
