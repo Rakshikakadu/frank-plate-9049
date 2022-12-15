@@ -11,8 +11,6 @@ import lombok.ToString;
 @NoArgsConstructor
 public class Cab {
 	
-//	@Id
-//	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer cabId;
 	private String carType;
 	private Float perKmRate;
