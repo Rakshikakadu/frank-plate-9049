@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -30,7 +31,7 @@ public class Driver extends AbstractUser{
 	
 	private String licenseNo;
 	
-	@OneToOne(cascade = CascadeType.ALL)
+	@Embedded
 	private Cab cab;
 	
 	private Float rating;
