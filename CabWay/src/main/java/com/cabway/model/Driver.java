@@ -15,6 +15,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import lombok.Value;
 
 @Data
 @ToString
@@ -26,6 +27,7 @@ public class Driver extends AbstractUser{
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer driverId;
+	
 	private String licenseNo;
 	
 	@OneToOne(cascade = CascadeType.ALL)
@@ -40,6 +42,14 @@ public class Driver extends AbstractUser{
 			String licenseNo, Cab cab, Float rating) {
 		super(userName, password, address, mobileNo, email);
 		this.driverId = driverId;
+		this.licenseNo = licenseNo;
+		this.cab = cab;
+		this.rating = rating;
+	}
+
+	public Driver(String userName, String password, String address, String mobileNo, String email, String licenseNo,
+			Cab cab, Float rating) {
+		super(userName, password, address, mobileNo, email);
 		this.licenseNo = licenseNo;
 		this.cab = cab;
 		this.rating = rating;

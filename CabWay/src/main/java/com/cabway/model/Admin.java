@@ -23,11 +23,11 @@ public class Admin extends AbstractUser{
 		super(userName, password, address, mobileNo, email);
 		this.adminId = adminId;
 	}
-	
-	public static void main(String[] args) {
-		
-		
-		
+
+	public Admin(String userName, String password, String address, String mobileNo, String email) {
+		super(userName, password, address, mobileNo, email);
 	}
+	
+	
 	
 }
