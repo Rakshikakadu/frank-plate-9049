@@ -11,8 +11,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.cabway.exceptions.AdminException;
+import com.cabway.exceptions.LoginException;
+import com.cabway.exceptions.TripBookinException;
 import com.cabway.model.Admin;
+import com.cabway.model.TripBooking;
 import com.cabway.services.AdminService;
+import com.cabway.services.TripBookingService;
 
 @RestController
 //@RequestMapping("/adminService")
@@ -20,6 +24,9 @@ public class AdminController {
 
 	@Autowired
 	private AdminService aService;
+	
+	@Autowired
+	private TripBookingService tbService;
 
 	@PostMapping("/admins")
 	public ResponseEntity<Admin> insertAdmin(@RequestBody Admin admin) throws AdminException {
@@ -47,5 +54,16 @@ public class AdminController {
 		return new ResponseEntity<Admin>(ad, HttpStatus.ACCEPTED);
 
 	}
+	
+	
+	@DeleteMapping("/admins/deletetripBooking/{tbid}/{uid}")
+	public ResponseEntity<TripBooking> deletetripBooking(@PathVariable("tbid") Integer tbid,@PathVariable("uid") Integer uid,@RequestParam String key) throws TripBookinException, LoginException, AdminException{
+		
+		TripBooking tBooking = tbService.deleteTripBooking(tbid, uid, key);
+		
+		
+		return new ResponseEntity<TripBooking>(tBooking, HttpStatus.ACCEPTED);
+	}
+	
 
 }

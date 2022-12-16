@@ -6,9 +6,11 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.cabway.exceptions.AdminException;
 import com.cabway.exceptions.CustomerException;
 import com.cabway.exceptions.LoginException;
 import com.cabway.exceptions.TripBookinException;
+import com.cabway.model.Admin;
 import com.cabway.model.CurrentSession;
 import com.cabway.model.TripBooking;
 import com.cabway.repository.AdminDao;
@@ -42,11 +44,11 @@ public class TripBookingServiceImpl implements TripBookingService {
 
 			if (customerValidate.getUserId() == tripBook.getCustomerId()) {
 
-				if (tripBook.getFromDateTime().isAfter(LocalDateTime.now()) && tripBook.getToDateTime().isAfter(tripBook.getFromDateTime())) {
-					
-					
+				if (tripBook.getFromDateTime().isAfter(LocalDateTime.now())
+						&& tripBook.getToDateTime().isAfter(tripBook.getFromDateTime())) {
+
 					tripBook.setStatus("Booked");
-					
+
 					return tbDao.save(tripBook);
 
 				} else {
@@ -62,26 +64,59 @@ public class TripBookingServiceImpl implements TripBookingService {
 	}
 
 	@Override
-	public TripBooking updateTripBooking(TripBooking tripBook, Integer userId, String key) throws TripBookinException {
+	public TripBooking updateTripBooking(TripBooking tripBook, Integer userId, String key)throws TripBookinException, LoginException, AdminException {
+
+		CurrentSession customerValidate = csDao.findByUuid(key);
+
+		if (customerValidate == null) {
+			throw new LoginException("Please login first to book a trip");
+		}
 
 		return null;
 	}
 
 	@Override
-	public TripBooking deleteTripBooking(Integer tbId, Integer userId, String key) throws TripBookinException {
-		// TODO Auto-generated method stub
-		return null;
+	public TripBooking deleteTripBooking(Integer tbId, Integer userId, String key)
+			throws TripBookinException, LoginException, AdminException {
+
+		CurrentSession adminValidate = csDao.findByUuid(key);
+
+		if (adminValidate == null) {
+			throw new LoginException("Please login first to book a trip");
+		}else {
+			
+			
+			if(userId== adminValidate.getUserId()) {
+				
+				TripBooking tripbook = tbDao.findById(tbId).orElseThrow(() -> new TripBookinException("Trip not found id"));
+				
+				if(tripbook.getStatus().equalsIgnoreCase("Cancelled") || tripbook.getStatus().equalsIgnoreCase("Completed")) {
+					
+					tbDao.delete(tripbook);
+					return tripbook;
+					
+				}else {
+					throw new TripBookinException("Trip is not completed or cancelled");
+				}
+			}else {
+				throw new AdminException("Invalid Admin id"+ userId);
+			}
+			
+		}
+
+		
 	}
 
 	@Override
 	public List<TripBooking> viewAllTripsOfCustomerById(Integer customerId, String key)
-			throws TripBookinException, CustomerException {
+			throws TripBookinException, CustomerException, LoginException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public TripBooking calculateBill(Integer customerId, String key) throws TripBookinException, CustomerException {
+	public TripBooking calculateBill(Integer customerId, String key)
+			throws TripBookinException, CustomerException, LoginException {
 		// TODO Auto-generated method stub
 		return null;
 	}
