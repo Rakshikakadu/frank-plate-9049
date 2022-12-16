@@ -2,6 +2,7 @@ package com.cabway.services;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,6 +11,7 @@ import com.cabway.exceptions.CustomerException;
 import com.cabway.exceptions.LoginException;
 import com.cabway.exceptions.TripBookinException;
 import com.cabway.model.CurrentSession;
+import com.cabway.model.Customer;
 import com.cabway.model.TripBooking;
 import com.cabway.repository.AdminDao;
 import com.cabway.repository.CurrentSessionDAO;
@@ -46,6 +48,12 @@ public class TripBookingServiceImpl implements TripBookingService {
 					
 					
 					tripBook.setStatus("Booked");
+					
+					Customer customer = cDao.findById(customerValidate.getUserId()).orElseThrow(()-> new CustomerException("Invalid customer id"));
+					
+					customer.getTripBookings().add(tripBook);
+					
+					cDao.save(customer);
 					
 					return tbDao.save(tripBook);
 

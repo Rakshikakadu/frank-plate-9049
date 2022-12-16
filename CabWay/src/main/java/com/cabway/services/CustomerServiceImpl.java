@@ -10,6 +10,7 @@ import com.cabway.exceptions.CustomerException;
 import com.cabway.exceptions.LoginException;
 import com.cabway.model.CurrentSession;
 import com.cabway.model.Customer;
+import com.cabway.model.CustomerValidationDTO;
 import com.cabway.repository.AdminDao;
 import com.cabway.repository.CurrentSessionDAO;
 import com.cabway.repository.CustomerDAO;
@@ -71,6 +72,8 @@ public class CustomerServiceImpl implements CustomerService{
 				
 				Customer existingCustomer =  customerDao.findById(customerId).orElseThrow(()-> new CustomerException("Invalid customerId."));
 				
+				sessionDao.delete(loggedInUser);
+				
 				customerDao.delete(existingCustomer);
 				
 				return existingCustomer;
@@ -80,6 +83,8 @@ public class CustomerServiceImpl implements CustomerService{
 		}else if(adminDao.findById(loggedInUser.getUserId()).isPresent()) {
 			
 			Customer existingCustomer =  customerDao.findById(customerId).orElseThrow(()-> new CustomerException("Invalid customerId."));
+			
+			sessionDao.delete(loggedInUser);
 			
 			customerDao.delete(existingCustomer);
 			
@@ -138,8 +143,20 @@ public class CustomerServiceImpl implements CustomerService{
 
 	@Override
 	public Customer validateCustomer(String username, String password) throws CustomerException {
-		// TODO Auto-generated method stub
-		return null;
+		CustomerValidationDTO customerDto = customerDao.findCustomerUserNamePassword(username, password);
+		
+		if(customerDto==null)
+			throw new CustomerException("Invalid details.");
+		
+		else {
+			
+			Customer customer = customerDao.findByUserName(username);
+			
+			return customer;
+			
+		}
 	}
+
+	
 
 }
