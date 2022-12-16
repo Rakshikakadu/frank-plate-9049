@@ -20,6 +20,7 @@ import com.cabway.model.Admin;
 import com.cabway.model.Customer;
 import com.cabway.services.AdminService;
 import com.cabway.services.CustomerService;
+import com.cabway.services.TripBookingService;
 
 @RestController
 //@RequestMapping("/adminService")
@@ -30,6 +31,9 @@ public class AdminController {
 	
 	@Autowired
 	private CustomerService customerService;
+	
+	@Autowired
+	private TripBookingService tbService;
 
 	@PostMapping("/admins")
 	public ResponseEntity<Admin> insertAdmin(@RequestBody Admin admin) throws AdminException {
