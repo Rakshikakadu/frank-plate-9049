@@ -25,7 +25,6 @@ import com.cabway.services.TripBookingService;
 
 import com.cabway.exceptions.TripBookinException;
 import com.cabway.model.TripBooking;
-import com.cabway.services.TripBookingService;
 
 @RestController
 //@RequestMapping("/adminService")
