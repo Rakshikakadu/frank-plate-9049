@@ -10,8 +10,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cabway.exceptions.CustomerException;
+import com.cabway.exceptions.LoginException;
 import com.cabway.model.Customer;
 import com.cabway.services.CustomerService;
 
@@ -30,35 +33,35 @@ public class CustomerController {
 	}
 	
 	@PostMapping("/updateCustomer")
-	public ResponseEntity<Customer> updateCustomer(@RequestBody Customer customer){
+	public ResponseEntity<Customer> updateCustomer(@RequestBody Customer customer, @RequestParam String key){
 		
-		Customer updatedCustomer = customerService.updateCustomer(customer);
+		Customer updatedCustomer = customerService.updateCustomer(customer, key);
 		
 		return new ResponseEntity<Customer>(updatedCustomer, HttpStatus.ACCEPTED);
 		
 	}
 	
 	@DeleteMapping("/deleteCustomer/{customerId}")
-	public ResponseEntity<Customer> deleteCustomer(@PathVariable("customerId") Integer customerId){
+	public ResponseEntity<Customer> deleteCustomer(@PathVariable("customerId") Integer customerId, @RequestParam String key) throws CustomerException, LoginException{
 		
-		Customer deletedCustomer = customerService.deleteCustomer(customerId);
+		Customer deletedCustomer = customerService.deleteCustomer(customerId, key);
 		
 		return new ResponseEntity<Customer>(deletedCustomer, HttpStatus.OK);
 		
 	}
 	
 	@GetMapping("/customers")
-	public ResponseEntity<List<Customer>> getAllCustomer(){
+	public ResponseEntity<List<Customer>> getAllCustomer(@RequestParam String key) throws CustomerException, LoginException{
 		
-		List<Customer> customers = customerService.getAllCustomers();
+		List<Customer> customers = customerService.getAllCustomers(key);
 		
 		return new ResponseEntity<List<Customer>>(customers, HttpStatus.OK);
 	}
 	
 	@GetMapping("/customers/{customerId}")
-	public ResponseEntity<Customer> getCustomerById(@PathVariable("customerId") Integer customerId){
+	public ResponseEntity<Customer> getCustomerById(@PathVariable("customerId") Integer customerId, @RequestParam String key) throws CustomerException, LoginException{
 		
-		Customer customer = customerService.getCustomerById(customerId);
+		Customer customer = customerService.getCustomerById(customerId, key);
 		
 		return new ResponseEntity<Customer>(customer, HttpStatus.OK);
 		

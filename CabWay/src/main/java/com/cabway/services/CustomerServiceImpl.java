@@ -7,84 +7,133 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cabway.exceptions.CustomerException;
+import com.cabway.exceptions.LoginException;
+import com.cabway.model.CurrentSession;
 import com.cabway.model.Customer;
+import com.cabway.repository.AdminDao;
+import com.cabway.repository.CurrentSessionDAO;
 import com.cabway.repository.CustomerDAO;
 
 @Service
 public class CustomerServiceImpl implements CustomerService{
 
 	@Autowired
-	CustomerDAO customerDao;
+	private CustomerDAO customerDao;
+	
+	@Autowired
+	private CurrentSessionDAO sessionDao; 
+	
+	@Autowired
+	private AdminDao adminDao;
 	
 	@Override
 	public Customer insertCustomer(Customer customer) throws CustomerException {
 		// TODO Auto-generated method stub
-		Customer registeredCustomer = customerDao.save(customer);
 		
-		return registeredCustomer;
+		Customer existingCustomer = customerDao.findByUserName(customer.getUserName());
+		
+		if(existingCustomer==null) {
+			Customer registeredCustomer = customerDao.save(customer);
+			
+			return registeredCustomer;
+		}else {
+			throw new CustomerException("Username already exists. Please try with another username.");
+		}
 	}
 
 	@Override
-	public Customer updateCustomer(Customer customer) throws CustomerException {
-	
-		Optional<Customer> opt = customerDao.findById(customer.getCustomerId());
+	public Customer updateCustomer(Customer customer, String key) throws CustomerException {
 		
-		if(opt.isPresent()) {
-			Customer existingCustomer = opt.get();
-			existingCustomer.setUserName(customer.getUserName());
-			existingCustomer.setPassword(customer.getPassword());
-			existingCustomer.setAddress(customer.getAddress());
-			existingCustomer.setEmail(customer.getEmail());
-			existingCustomer.setMobileNo(customer.getMobileNo());
+		CurrentSession loggedInUser = sessionDao.findByUuid(key);
+		
+		if(loggedInUser==null) {
+			throw new CustomerException("Please provide a valid key to update your details.");
+		}
+	
+		if(loggedInUser.getUserId() == customer.getCustomerId()) {
 			
-			customerDao.save(existingCustomer);
+			return customerDao.save(customer);
+		}else {
+			throw new CustomerException("Invalid details. Please login first to update your details.");
+		}
+	}
+
+	@Override
+	public Customer deleteCustomer(Integer customerId, String key) throws CustomerException, LoginException {
+		
+		CurrentSession loggedInUser = sessionDao.findByUuid(key); 
+		
+		if(loggedInUser==null)
+			throw new LoginException("Please log in to delete account.");
+		
+		if(customerDao.findById(loggedInUser.getUserId()).isPresent() ) {
+			if(customerId == loggedInUser.getUserId()) {
+				
+				Customer existingCustomer =  customerDao.findById(customerId).orElseThrow(()-> new CustomerException("Invalid customerId."));
+				
+				customerDao.delete(existingCustomer);
+				
+				return existingCustomer;
+			}else {
+				throw new CustomerException("Invalid customer Id.");
+			}
+		}else if(adminDao.findById(loggedInUser.getUserId()).isPresent()) {
+			
+			Customer existingCustomer =  customerDao.findById(customerId).orElseThrow(()-> new CustomerException("Invalid customerId."));
+			
+			customerDao.delete(existingCustomer);
 			
 			return existingCustomer;
+			
 		}else {
-			throw new CustomerException("Invalid details..");
+			throw new IllegalArgumentException("Invalid user Id entered.");
+		}
+		
+	}
+
+	@Override
+	public List<Customer> getAllCustomers(String key) throws CustomerException, LoginException {
+		
+		CurrentSession loggedInUser = sessionDao.findByUuid(key);
+		
+		if(loggedInUser != null) {
+			List<Customer> customers = customerDao.findAll();
+			
+			if(customers.size()==0) {
+				throw new CustomerException("No customers registered yet..");
+			}else {
+				return customers;
+			}
+		}else {
+			throw new LoginException("Please login first.");
 		}
 	}
 
 	@Override
-	public Customer deleteCustomer(Integer customerId) throws CustomerException {
+	public Customer getCustomerById(Integer customerId, String key) throws CustomerException, LoginException {
 		
-		Optional<Customer> opt = customerDao.findById(customerId);
+		CurrentSession loggedInUser = sessionDao.findByUuid(key);
 		
-		if(opt.isPresent()) {
-			Customer deletedCustomer = opt.get();
+		if(loggedInUser==null)
+			throw new LoginException("Please log in to get details.");
+		
+		if(customerDao.findById(loggedInUser.getUserId()).isPresent() ) {
+			if(customerId == loggedInUser.getUserId()) {
+				
+				Customer existingCustomer =  customerDao.findById(customerId).orElseThrow(()-> new CustomerException("Invalid customerId."));
+				return existingCustomer;
+			}else {
+				throw new CustomerException("Invalid customer Id.");
+			}
+		}else if(adminDao.findById(loggedInUser.getUserId()).isPresent()) {
 			
-			customerDao.delete(deletedCustomer);
+			Customer existingCustomer =  customerDao.findById(customerId).orElseThrow(()-> new CustomerException("Invalid customerId."));
+			return existingCustomer;
 			
-			return deletedCustomer;
 		}else {
-			throw new CustomerException("No customer found with id " + customerId);
+			throw new IllegalArgumentException("Invalid user Id entered.");
 		}
-	}
-
-	@Override
-	public List<Customer> getAllCustomers() throws CustomerException {
 		
-		List<Customer> customers = customerDao.findAll();
-		
-		if(customers.size()==0) {
-			throw new CustomerException("No customers registered yet..");
-		}else {
-			return customers;
-		}
-	}
-
-	@Override
-	public Customer getCustomerById(Integer customerId) throws CustomerException {
-		
-		Optional<Customer> opt = customerDao.findById(customerId);
-		
-		if(opt.isPresent()) {
-			Customer foundCustomer = opt.get();
-			
-			return foundCustomer;
-		}else {
-			throw new CustomerException("No customer found with id " + customerId);
-		}
 	}
 
 	@Override
