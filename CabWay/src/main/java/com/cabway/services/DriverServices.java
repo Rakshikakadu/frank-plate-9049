@@ -8,11 +8,11 @@ import com.cabway.model.Driver;
 public interface DriverServices {
 	public Driver insertDriver(Driver driver) throws DriverException;
 
-	public Driver updateDriver(Driver driver) throws DriverException;
+	public Driver updateDriver(Driver driver,String key) throws DriverException;
 
-	public Driver deleteDriver(int driverID) throws DriverException;
+	public Driver deleteDriver(Integer driverID,String key) throws DriverException;
 
-	public List<Driver> viewBestDriver() throws DriverException;
+	public List<Driver> viewBestDriver(String key) throws DriverException;
 
-	public Driver viewDriver(int driverId) throws DriverException;
+	public Driver viewDriver(Integer driverId,String key) throws DriverException;
 }
