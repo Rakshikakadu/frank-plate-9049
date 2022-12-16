@@ -8,4 +8,5 @@ import com.cabway.model.Customer;
 @Repository
 public interface CustomerDAO extends JpaRepository<Customer, Integer>{
 
+	public Customer findByUserName(String userName);
 }
