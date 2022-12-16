@@ -9,9 +9,9 @@ public interface AdminService {
 	
 	public Admin insertAdmin(Admin admin)throws AdminException;
 	
-	public Admin updateAdminDetails(Admin admin)throws AdminException;
+	public Admin updateAdminDetails(Admin admin,String key)throws AdminException;
 	
-	public Admin deleteAdminDetails(Integer adminId)throws AdminException;
+	public Admin deleteAdminDetails(Integer adminId, String key)throws AdminException;
 	
 	//public List<TripBooking> getAllTripsByCustomerId(Integer customerId)throws CustomerException;
 	

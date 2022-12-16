@@ -12,6 +12,14 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+	
+	
+	@ExceptionHandler(TripBookinException.class)
+	public ResponseEntity<ErrorDetails> loginExceptionHandler(TripBookinException e, WebRequest re){
+		ErrorDetails err = new ErrorDetails(LocalDateTime.now(), e.getMessage(), re.getDescription(false));
+		
+		return new ResponseEntity<ErrorDetails>(err, HttpStatus.BAD_REQUEST);
+	}
 
 	@ExceptionHandler(LoginException.class)
 	public ResponseEntity<ErrorDetails> loginExceptionHandler(LoginException e, WebRequest re){

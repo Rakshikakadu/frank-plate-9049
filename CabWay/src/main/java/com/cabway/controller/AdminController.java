@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.cabway.exceptions.AdminException;
 import com.cabway.model.Admin;
@@ -30,18 +31,18 @@ public class AdminController {
 	}
 
 	@PutMapping("/admins")
-	public ResponseEntity<Admin> updatedAdmin(@RequestBody Admin admin) throws AdminException {
+	public ResponseEntity<Admin> updatedAdmin(@RequestBody Admin admin ,@RequestParam String key) throws AdminException {
 
-		Admin ad = aService.updateAdminDetails(admin);
+		Admin ad = aService.updateAdminDetails(admin, key);
 
 		return new ResponseEntity<Admin>(ad, HttpStatus.ACCEPTED);
 
 	}
 	
 	@DeleteMapping("/admins/{aid}")
-	public ResponseEntity<Admin> deletedAdmin(@PathVariable("aid") Integer adminId) throws AdminException {
+	public ResponseEntity<Admin> deletedAdmin(@PathVariable("aid") Integer adminId,@RequestParam String key) throws AdminException {
 
-		Admin ad = aService.deleteAdminDetails(adminId);
+		Admin ad = aService.deleteAdminDetails(adminId, key);
 
 		return new ResponseEntity<Admin>(ad, HttpStatus.ACCEPTED);
 
