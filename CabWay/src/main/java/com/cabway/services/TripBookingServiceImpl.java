@@ -11,13 +11,14 @@ import com.cabway.exceptions.AdminException;
 import com.cabway.exceptions.CustomerException;
 import com.cabway.exceptions.LoginException;
 import com.cabway.exceptions.TripBookinException;
-import com.cabway.model.Admin;
 import com.cabway.model.CurrentSession;
 import com.cabway.model.Customer;
+import com.cabway.model.Driver;
 import com.cabway.model.TripBooking;
 import com.cabway.repository.AdminDao;
 import com.cabway.repository.CurrentSessionDAO;
 import com.cabway.repository.CustomerDAO;
+import com.cabway.repository.DriverDAO;
 import com.cabway.repository.TripBookingDao;
 
 @Service
@@ -34,6 +35,9 @@ public class TripBookingServiceImpl implements TripBookingService {
 
 	@Autowired
 	private TripBookingDao tbDao;
+	
+	@Autowired
+	private DriverDAO driverDao;
 
 	@Override
 	public TripBooking insertTripBooking(TripBooking tripBook, String key) throws TripBookinException, LoginException {
@@ -55,7 +59,7 @@ public class TripBookingServiceImpl implements TripBookingService {
 					
 					customer.getTripBookings().add(tripBook);
 					
-					cDao.save(customer);
+//					cDao.save(customer);
 					
 					return tbDao.save(tripBook);
 
@@ -74,13 +78,119 @@ public class TripBookingServiceImpl implements TripBookingService {
 	@Override
 	public TripBooking updateTripBooking(TripBooking tripBook, Integer userId, String key)throws TripBookinException, LoginException, AdminException {
 
-		CurrentSession customerValidate = csDao.findByUuid(key);
+		CurrentSession userValidate = csDao.findByUuid(key);
 
-		if (customerValidate == null) {
+		if (userValidate == null) {
 			throw new LoginException("Please login first to book a trip");
 		}
+		
+		if(cDao.findById(userId).isPresent()) {
+			
+			TripBooking updatedTripBooking = null;
+			
+			if(userId==userValidate.getUserId()) {
+				
+				Customer customer = cDao.findById(userId).orElseThrow(()-> new CustomerException("Invalid user Id."));
+				
+				Set<TripBooking> trips =  customer.getTripBookings();
+				
+				for(TripBooking trip : trips) {
+					if(trip.getTripBookingId() == tripBook.getTripBookingId()) {
+						if(tripBook.getFromDateTime().isAfter(LocalDateTime.now()) && tripBook.getToDateTime().isAfter(tripBook.getFromDateTime())) {
+							
+							trip.setFromLocation(tripBook.getFromLocation());
+							trip.setToLocation(tripBook.getToLocation());
+							trip.setFromDateTime(tripBook.getFromDateTime());
+							trip.setToDateTime(tripBook.getToDateTime());
+							trip.setStatus(tripBook.getStatus());
+							trip.setDistanceInKm(tripBook.getDistanceInKm());
+							
+							updatedTripBooking = trip;
+							
+							tbDao.save(updatedTripBooking);
+						}
+					}
+				}
+//				
+//				cDao.save(customer);
+//				TripBooking existingTb = tbDao.findById(tripBook.getTripBookingId()).orElseThrow(()-> new TripBookinException("Invalid tripBookig id."));
+//				
+//				Driver driver = existingTb.getDriver();
+//				
+//				if(driver!=null) {
+//					for(TripBooking trip : driver.getTripBookings()) {
+//						if(tripBook.getTripBookingId()== trip.getTripBookingId()) {
+//							trip.setFromLocation(tripBook.getFromLocation());
+//							trip.setToLocation(tripBook.getToLocation());
+//							trip.setFromDateTime(tripBook.getFromDateTime());
+//							trip.setToDateTime(tripBook.getToDateTime());
+//							trip.setStatus(tripBook.getStatus());
+//						}
+//					}
+//					driverDao.save(driver);
+//				}
+			}
+			if(updatedTripBooking==null)
+				throw new TripBookinException("Invalid tripBooking details.");
+			
+			else
+				return updatedTripBooking;
+			
+		}else if(aDao.findById(userId).isPresent()) {
+			
+			TripBooking updatedTripBooking = null;
+			
+			if(userId==userValidate.getUserId()) {
+				
+				updatedTripBooking = tbDao.findById(tripBook.getTripBookingId()).orElseThrow(()-> new TripBookinException("Invalid tripBooking details."));
+				
+				updatedTripBooking.setDriver(tripBook.getDriver());
+				
+				updatedTripBooking.setStatus(tripBook.getStatus());
+				
+				
+				tbDao.save(updatedTripBooking);
+				
+//				Customer customer = cDao.findById(tripBook.getCustomerId()).orElseThrow(()-> new CustomerException("Invalid user Id."));
+				
+//				Set<TripBooking> trips =  customer.getTripBookings();
+				
+//				List<TripBooking> trips = tbDao.findAll();
+				
+//				for(TripBooking trip : trips) {
+//					if(trip.getTripBookingId() == tripBook.getTripBookingId()) {
+////						if(tripBook.getFromDateTime().isAfter(LocalDateTime.now()) && tripBook.getToDateTime().isAfter(tripBook.getFromDateTime())) {
+//							
+//							Driver assignedDriver = tripBook.getDriver();
+//							trip.setDriver(assignedDriver);
+//							trip.setStatus(tripBook.getStatus());
+//							
+////							Driver driver = driverDao.findById(tripBook.getDriver().getDriverId()).orElseThrow(()-> new TripBookinException("Invalid tripBooking details."));
+////							
+////							driver.getTripBookings().add(tripBook);
+////							
+//							updatedTripBooking = trip;
+////							
+////							driverDao.save(driver);
+//							
+////						}
+//					}
+//				}
+//				tbDao.save(updatedTripBooking);
+//				cDao.save(customer);
 
-		return null;
+			}
+			if(updatedTripBooking==null)
+				throw new TripBookinException("Invalid tripBooking details.");
+			
+			else
+				return updatedTripBooking;
+			
+		}else {
+			throw new IllegalArgumentException("Invalid user id.");
+		}
+
+		
 	}
 
 	@Override

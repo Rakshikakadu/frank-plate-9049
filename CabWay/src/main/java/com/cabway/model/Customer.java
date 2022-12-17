@@ -10,6 +10,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,6 +28,7 @@ public class Customer extends AbstractUser{
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer customerId;
 	
+	@JsonIgnore
 	@OneToMany(cascade = CascadeType.ALL)
 	private Set<TripBooking> tripBookings = new HashSet<>();
 
