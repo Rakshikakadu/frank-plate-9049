@@ -116,16 +116,67 @@ public class TripBookingServiceImpl implements TripBookingService {
 	}
 
 	@Override
-	public List<TripBooking> viewAllTripsOfCustomerById(Integer customerId, String key)
+	public Set<TripBooking> viewAllTripsOfCustomerById(Integer customerId, String key)
 			throws TripBookinException, CustomerException, LoginException {
-		// TODO Auto-generated method stub
-		return null;
+		CurrentSession customerValidate = csDao.findByUuid(key);
+
+		if (customerValidate == null) {
+			throw new LoginException("Please login first to get a trip details");
+		}else {
+			
+			
+			if(customerId == customerValidate.getUserId()) {
+				
+				Customer customer = cDao.findById(customerId).orElseThrow(() -> new CustomerException("Customer not found id"));
+				Set<TripBooking> alltrips = customer.getTripBookings();
+				
+				return alltrips;
+				 
+				
+			}else {
+				throw new CustomerException("Invalid customer id :"+customerId);
+			}
+			
+		}
+		
 	}
 
 	@Override
 	public TripBooking calculateBill(Integer customerId, String key)
-			throws TripBookinException, CustomerException, LoginException {
-		// TODO Auto-generated method stub
+			throws TripBookinException, CustomerException, LoginException, AdminException {
+		
+		CurrentSession adminValidate = csDao.findByUuid(key);
+
+		if (adminValidate == null) {
+			throw new LoginException("Please login first to calculate bill for customerid : "+ customerId);
+		}else {
+			
+			
+			if(customerId== adminValidate.getUserId()) {
+				
+				//Customer customer = cDao.findById(customerId).orElseThrow(() -> new TripBookinException("Trip not found id"));
+				
+				TripBooking tripbooking = tbDao.findByCustomerId(customerId);
+				
+				if(tripbooking!=null) {
+					
+					Float updatedBill = tripbooking.getDriver().getCab().getPerKmRate() * tripbooking.getDistanceInKm();
+					
+					
+					tripbooking.setBill(updatedBill);
+					
+					tbDao.save(tripbooking);
+				}else {
+					throw new TripBookinException("No trips for given customerId: "+customerId);
+				}
+				
+				
+			}else {
+				throw new AdminException("Invalid Customer id"+ customerId);
+			}
+			
+		}
+		
 		return null;
 	}
 

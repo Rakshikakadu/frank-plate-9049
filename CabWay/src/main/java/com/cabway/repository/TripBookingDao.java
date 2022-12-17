@@ -9,5 +9,5 @@ import com.cabway.model.TripBooking;
 public interface TripBookingDao extends JpaRepository<TripBooking, Integer>{
 	
 	
-	
+	public TripBooking findByCustomerId(Integer customerId);
 }
