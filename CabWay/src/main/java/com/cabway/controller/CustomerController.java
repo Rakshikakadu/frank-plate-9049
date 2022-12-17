@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cabway.exceptions.AdminException;
 import com.cabway.exceptions.CustomerException;
 import com.cabway.exceptions.LoginException;
 import com.cabway.exceptions.TripBookinException;
@@ -93,5 +94,14 @@ public class CustomerController {
 		Customer customer = customerService.validateCustomer(userName, password);
 		
 		return new ResponseEntity<Customer>(customer, HttpStatus.OK);
+	}
+	
+	@PutMapping("/customer/updateTripBooking/{userId}")
+	public ResponseEntity<TripBooking> updateTrip(@PathVariable("userId") Integer userId, @RequestParam String key, @RequestBody TripBooking tripBook) throws TripBookinException, LoginException, AdminException{
+		
+		TripBooking trip = tripbookService.updateTripBooking(tripBook, userId, key);
+		
+		return new ResponseEntity<TripBooking>(trip, HttpStatus.ACCEPTED);
+		
 	}
 }

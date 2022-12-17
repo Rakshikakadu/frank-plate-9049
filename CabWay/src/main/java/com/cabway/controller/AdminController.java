@@ -89,7 +89,15 @@ public class AdminController {
 		
 		return new ResponseEntity<TripBooking>(tBooking, HttpStatus.ACCEPTED);
 	}
-	
+
+	@PutMapping("/admin/updateTripBooking/{userId}")
+	public ResponseEntity<TripBooking> updateTrip(@PathVariable("userId") Integer userId, @RequestParam String key, @RequestBody TripBooking tripBook) throws TripBookinException, LoginException, AdminException{
+		
+		TripBooking trip = tbService.updateTripBooking(tripBook, userId, key);
+		
+		return new ResponseEntity<TripBooking>(trip, HttpStatus.ACCEPTED);
+		
+	}
 	
 	@GetMapping("/admins/customers/tripbookings")
 	public ResponseEntity<Set<TripBooking>> getAllTripsOfCustomers(@RequestParam String key) throws CustomerException, AdminException{
@@ -116,7 +124,6 @@ public class AdminController {
 		
 		return new ResponseEntity<Set<TripBooking>>(tripsByDate, HttpStatus.ACCEPTED);
 	}
-	
 
 	
 }
