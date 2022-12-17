@@ -100,7 +100,7 @@ public class AdminController {
 	}
 	
 	@GetMapping("/admins/customers/tripbookings")
-	public ResponseEntity<Set<TripBooking>> getAllTripsOfCustomers(@RequestParam String key) throws CustomerException, AdminException{
+	public ResponseEntity<Set<TripBooking>> getAllTrips(@RequestParam String key) throws CustomerException, AdminException{
 		
 		Set<TripBooking> customersTrips = aService.getAllTripsOfCustomers(key);
 		
