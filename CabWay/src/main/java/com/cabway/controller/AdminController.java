@@ -1,6 +1,9 @@
 package com.cabway.controller;
 
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -38,6 +41,8 @@ public class AdminController {
 	
 	@Autowired
 	private TripBookingService tbService;
+	
+	
 
 
 	@PostMapping("/admins")
@@ -84,7 +89,7 @@ public class AdminController {
 		
 		return new ResponseEntity<TripBooking>(tBooking, HttpStatus.ACCEPTED);
 	}
-	
+
 	@PutMapping("/admin/updateTripBooking/{userId}")
 	public ResponseEntity<TripBooking> updateTrip(@PathVariable("userId") Integer userId, @RequestParam String key, @RequestBody TripBooking tripBook) throws TripBookinException, LoginException, AdminException{
 		
@@ -93,5 +98,32 @@ public class AdminController {
 		return new ResponseEntity<TripBooking>(trip, HttpStatus.ACCEPTED);
 		
 	}
+	
+	@GetMapping("/admins/customers/tripbookings")
+	public ResponseEntity<Set<TripBooking>> getAllTripsOfCustomers(@RequestParam String key) throws CustomerException, AdminException{
+		
+		Set<TripBooking> customersTrips = aService.getAllTripsOfCustomers(key);
+		
+		
+		return new ResponseEntity<Set<TripBooking>>(customersTrips, HttpStatus.ACCEPTED);
+	}
+	
+	@GetMapping("/admins/customer/tripbookings/{cid}")
+	public ResponseEntity<Set<TripBooking>> getAllTripsOfCustomers(@PathVariable("cid") Integer customerId,  @RequestParam String key) throws CustomerException, AdminException, TripBookinException{
+		
+		Set<TripBooking> customerTrips = aService.getTripsByCustomerId(customerId, key);
+		
+		
+		return new ResponseEntity<Set<TripBooking>>(customerTrips, HttpStatus.ACCEPTED);
+	}
+	
+	@GetMapping("/admins/tripbookings/{date}")
+	public ResponseEntity<Set<TripBooking>> getTripsDateWise(@PathVariable("date") Date date, String key) throws CustomerException, TripBookinException, AdminException{
+		
+		Set<TripBooking> tripsByDate = aService.getTripsDatewise(date, key);
+		
+		return new ResponseEntity<Set<TripBooking>>(tripsByDate, HttpStatus.ACCEPTED);
+	}
 
+	
 }

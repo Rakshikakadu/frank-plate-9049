@@ -8,9 +8,11 @@ import org.springframework.stereotype.Service;
 
 import com.cabway.exceptions.CustomerException;
 import com.cabway.exceptions.DriverException;
+import com.cabway.exceptions.LoginException;
 import com.cabway.model.CurrentSession;
 import com.cabway.model.Customer;
 import com.cabway.model.Driver;
+import com.cabway.repository.AdminDao;
 import com.cabway.repository.CurrentSessionDAO;
 import com.cabway.repository.DriverDAO;
 
@@ -23,6 +25,9 @@ public class DriverServicesImpl implements DriverServices{
 	
 	@Autowired
 	CurrentSessionDAO currentSessionDao;
+	
+	@Autowired
+	private AdminDao adminDao;
 	
 	@Override
 	public Driver insertDriver(Driver driver) throws DriverException {
@@ -53,7 +58,6 @@ public class DriverServicesImpl implements DriverServices{
 		else
 			throw new DriverException("Invalid Driver details, please login first");
 		
-		
 	}
 
 	@Override
@@ -63,22 +67,33 @@ public class DriverServicesImpl implements DriverServices{
 		CurrentSession loggedInUser= currentSessionDao.findByUuid(key);
 		
 		
-		if(loggedInUser == null) {
-			throw new DriverException("Please provide a valid key to delete a driver");
+		
+		if(driverDao.findById(loggedInUser.getUserId()).isPresent()) 
+		{
+			if(driverId == loggedInUser.getUserId()) {
+				
+				Driver existingDriver =  driverDao.findById(driverId).orElseThrow(()-> new DriverException("Invalid driverId."));
+				
+				currentSessionDao.delete(loggedInUser);
+				
+				driverDao.delete(existingDriver);
+				
+				return existingDriver;
+			}else {
+				throw new DriverException("Invalid Id.");
+			}
+		}else if(adminDao.findById(loggedInUser.getUserId()).isPresent()) {
+			Driver existingDriver =  driverDao.findById(driverId).orElseThrow(()-> new DriverException("Invalid driverId."));
+			
+			currentSessionDao.delete(loggedInUser);
+			
+			driverDao.delete(existingDriver);
+			
+			return existingDriver;
+		}else {
+			throw new IllegalArgumentException("Invalid user Id entered.");
 		}
 		
-		
-		if(driverId == loggedInUser.getUserId()) {
-			Driver deletedDriver=driverDao.findById(driverId).orElseThrow(()->new DriverException("driver not found"));
-			
-			driverDao.delete(deletedDriver);
-			
-			return deletedDriver;
-		}
-		else
-			throw new DriverException("Invalid Driver details, please login first");
-		
-	
 	}
 
 	@Override
@@ -94,22 +109,29 @@ public class DriverServicesImpl implements DriverServices{
 	}
 
 	@Override
-	public Driver viewDriver(Integer driverId,String key) throws DriverException {
+	public Driver viewDriver(Integer driverId,String key) throws DriverException, LoginException  {
 		CurrentSession loggedInUser= currentSessionDao.findByUuid(key);
 		
-		if(loggedInUser == null) {
-			throw new DriverException("Please provide a valid key to view a driver");
+		if(loggedInUser==null)
+			throw new LoginException("Please log in to get details.");
+		
+		if(driverDao.findById(loggedInUser.getUserId()).isPresent() ) {
+			if(driverId == loggedInUser.getUserId()) {
+				
+				Driver existingDriver =  driverDao.findById(driverId).orElseThrow(()-> new DriverException("Invalid driverId."));
+				return existingDriver;
+			}else {
+				throw new CustomerException("Invalid customer Id.");
+			}
+		}else if(adminDao.findById(loggedInUser.getUserId()).isPresent()) {
+			
+			Driver existingDriver=  driverDao.findById(driverId).orElseThrow(()-> new DriverException("Invalid driverId."));
+			return existingDriver;
+			
+		}else {
+			throw new IllegalArgumentException("Invalid user Id entered.");
 		}
 		
-		
-		if(driverId == loggedInUser.getUserId()) {
-			Driver viewDriver=driverDao.findById(driverId).orElseThrow(()->new DriverException("driver not found"));
-			
-			
-			return viewDriver;
-		}
-		else
-			throw new DriverException("Invalid Driver details, please login first");
 	
 	}
 

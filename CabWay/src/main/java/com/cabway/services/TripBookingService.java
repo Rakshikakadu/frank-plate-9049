@@ -1,6 +1,7 @@
 package com.cabway.services;
 
-import java.util.List;
+
+import java.util.Set;
 
 import com.cabway.exceptions.AdminException;
 import com.cabway.exceptions.CustomerException;
@@ -16,9 +17,9 @@ public interface TripBookingService {
 	
 	public TripBooking deleteTripBooking(Integer tbId,Integer userId, String key)throws TripBookinException, LoginException, AdminException;
 	
-	public List<TripBooking> viewAllTripsOfCustomerById(Integer customerId,String key)throws TripBookinException,CustomerException, LoginException;
+	public Set<TripBooking> viewAllTripsOfCustomerById(Integer customerId,String key)throws TripBookinException,CustomerException, LoginException;
 	
-	public TripBooking calculateBill(Integer customerId, String key)throws TripBookinException,CustomerException, LoginException;
+	public TripBooking calculateBill(Integer customerId, String key)throws TripBookinException,CustomerException, LoginException, AdminException;
 	
 	
 }
