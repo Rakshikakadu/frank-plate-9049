@@ -14,10 +14,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
-@Data
+//@Data
+@Getter
+@Setter
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
@@ -29,7 +33,7 @@ public class Customer extends AbstractUser{
 	private Integer customerId;
 	
 	@JsonIgnore
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "customer")
 	private Set<TripBooking> tripBookings = new HashSet<>();
 
 	public Customer(String userName, String password, String address, String mobileNo, String email,

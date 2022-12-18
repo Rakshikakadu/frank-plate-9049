@@ -1,6 +1,7 @@
 package com.cabway.controller;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -76,10 +77,10 @@ public class CustomerController {
 		
 	}
 	
-	@PostMapping("/customers/tripBook")
-	public ResponseEntity<TripBooking> insertTrip(@RequestBody TripBooking tripBook,@RequestParam String key) throws TripBookinException, LoginException{
+	@PostMapping("/customers/tripBook/{cid}")
+	public ResponseEntity<TripBooking> insertTrip(@PathVariable("cid") Integer customerId ,@RequestBody TripBooking tripBook, @RequestParam String key) throws TripBookinException, LoginException{
 		
-		TripBooking tripBook1 = tripbookService.insertTripBooking(tripBook, key);
+		TripBooking tripBook1 = tripbookService.insertTripBooking(tripBook, customerId, key);
 		
 		
 		return new ResponseEntity<TripBooking>(tripBook1, HttpStatus.OK);
@@ -103,5 +104,14 @@ public class CustomerController {
 		
 		return new ResponseEntity<TripBooking>(trip, HttpStatus.ACCEPTED);
 		
+	}
+	
+	@GetMapping("/customer/tripbookings/{cid}")
+	public ResponseEntity<Set<TripBooking>> getAllTripsOfCustomers(@PathVariable("cid") Integer customerId,  @RequestParam String key) throws CustomerException, AdminException, TripBookinException, LoginException{
+		
+		Set<TripBooking> customerTrips = tripbookService.viewAllTripsOfCustomerById(customerId, key);
+		
+		
+		return new ResponseEntity<Set<TripBooking>>(customerTrips, HttpStatus.ACCEPTED);
 	}
 }
