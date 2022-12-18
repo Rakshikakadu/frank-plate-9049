@@ -1,5 +1,7 @@
 package com.cabway.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +39,7 @@ public class DriverController {
 	private CabServices cabService;
 	
 	@PostMapping("/driver")
-	public ResponseEntity<Driver> registerDriver(@RequestBody Driver driver){
+	public ResponseEntity<Driver> registerDriver(@Valid @RequestBody Driver driver){
 		
 		Driver registeredDriver  = driverService.insertDriver(driver);
 		
@@ -45,7 +47,7 @@ public class DriverController {
 	}
 	
 	@PutMapping("/updateDriver")
-	public ResponseEntity<Driver> updateDriver(@RequestBody Driver driver, @RequestParam String key){
+	public ResponseEntity<Driver> updateDriver(@Valid @RequestBody Driver driver, @RequestParam String key){
 		
 		Driver updatedDriver = driverService.updateDriver(driver, key);
 		
@@ -72,7 +74,7 @@ public class DriverController {
 	}
 	
 	@PutMapping("/driver/updateTripBooking/{userId}")
-	public ResponseEntity<TripBooking> updateTrip(@PathVariable("userId") Integer userId, @RequestParam String key, @RequestBody TripBooking tripBook) throws TripBookinException, LoginException, AdminException{
+	public ResponseEntity<TripBooking> updateTrip(@PathVariable("userId") Integer userId, @RequestParam String key,@Valid @RequestBody TripBooking tripBook) throws TripBookinException, LoginException, AdminException{
 		
 		TripBooking trip = tbService.updateTripBooking(tripBook, userId, key);
 		
@@ -82,7 +84,7 @@ public class DriverController {
 	
 
 	@PutMapping("/drivers/updateCab")
-	public ResponseEntity<Cab> updateCab(@RequestBody Cab cab, @RequestParam String key) throws DriverException, LoginException{
+	public ResponseEntity<Cab> updateCab(@Valid @RequestBody Cab cab, @RequestParam String key) throws DriverException, LoginException{
 		
 		Cab updatedCab = cabService.updateCab(cab);
 		

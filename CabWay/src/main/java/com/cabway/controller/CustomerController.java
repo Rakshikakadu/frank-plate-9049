@@ -3,6 +3,8 @@ package com.cabway.controller;
 import java.util.List;
 import java.util.Set;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,7 +43,7 @@ public class CustomerController {
 	private DriverServices driverService;
 	
 	@PostMapping("/customer")
-	public ResponseEntity<Customer> registerCustomer(@RequestBody Customer customer){
+	public ResponseEntity<Customer> registerCustomer(@Valid @RequestBody Customer customer){
 		
 		Customer registeredCustomer  = customerService.insertCustomer(customer);
 		
@@ -49,7 +51,7 @@ public class CustomerController {
 	}
 	
 	@PutMapping("/updateCustomer")
-	public ResponseEntity<Customer> updateCustomer(@RequestBody Customer customer, @RequestParam String key){
+	public ResponseEntity<Customer> updateCustomer(@Valid @RequestBody Customer customer, @RequestParam String key){
 		
 		Customer updatedCustomer = customerService.updateCustomer(customer, key);
 		
@@ -84,7 +86,7 @@ public class CustomerController {
 	}
 	
 	@PostMapping("/customers/tripBook/{cid}")
-	public ResponseEntity<TripBooking> insertTrip(@PathVariable("cid") Integer customerId ,@RequestBody TripBooking tripBook, @RequestParam String key) throws TripBookinException, LoginException{
+	public ResponseEntity<TripBooking> insertTrip(@PathVariable("cid") Integer customerId ,@Valid @RequestBody TripBooking tripBook, @RequestParam String key) throws TripBookinException, LoginException{
 		
 		TripBooking tripBook1 = tripbookService.insertTripBooking(tripBook, customerId, key);
 		
@@ -93,7 +95,7 @@ public class CustomerController {
 	}
 	
 	@GetMapping("/validateCustomer")
-	public ResponseEntity<Customer> validateCustomer(@RequestBody CustomerValidationDTO customerDto){
+	public ResponseEntity<Customer> validateCustomer(@Valid @RequestBody CustomerValidationDTO customerDto){
 		
 		String userName = customerDto.getUserName();
 		String password = customerDto.getPassword();
@@ -104,7 +106,7 @@ public class CustomerController {
 	}
 	
 	@PutMapping("/customer/updateTripBooking/{userId}")
-	public ResponseEntity<TripBooking> updateTrip(@PathVariable("userId") Integer userId, @RequestParam String key, @RequestBody TripBooking tripBook) throws TripBookinException, LoginException, AdminException{
+	public ResponseEntity<TripBooking> updateTrip(@PathVariable("userId") Integer userId, @RequestParam String key,@Valid @RequestBody TripBooking tripBook) throws TripBookinException, LoginException, AdminException{
 		
 		TripBooking trip = tripbookService.updateTripBooking(tripBook, userId, key);
 		
@@ -122,7 +124,7 @@ public class CustomerController {
 	}
 	
 	@PutMapping("/customer/ratedriver")
-	public ResponseEntity<Driver> rateDriver(@RequestBody Driver driver, @RequestParam String key) throws DriverException, LoginException{
+	public ResponseEntity<Driver> rateDriver(@Valid @RequestBody Driver driver, @RequestParam String key) throws DriverException, LoginException{
 		
 		Driver ratedriver = driverService.rateDriverByCustomer(driver, key);
 		

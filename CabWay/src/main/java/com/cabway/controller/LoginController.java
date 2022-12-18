@@ -1,5 +1,7 @@
 package com.cabway.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +22,7 @@ public class LoginController {
 	private LoginServices login;
 	
 	@PostMapping("/login")
-	public ResponseEntity<String> loginUser(@RequestBody LoginDTO dto) throws LoginException{
+	public ResponseEntity<String> loginUser(@Valid @RequestBody LoginDTO dto) throws LoginException{
 		
 		String res = login.logIntoAccount(dto);
 		
