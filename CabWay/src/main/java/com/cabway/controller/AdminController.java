@@ -193,6 +193,7 @@ public class AdminController {
 		Integer count = cabService.countCabsOfType(carType);
 		
 		return new ResponseEntity<Integer>(count,HttpStatus.OK);
+	}
 
 	
 	
