@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -59,7 +61,7 @@ public class AdminController {
 
 
 	@PostMapping("/admins")
-	public ResponseEntity<Admin> insertAdmin(@RequestBody Admin admin) throws AdminException {
+	public ResponseEntity<Admin> insertAdmin(@Valid @RequestBody Admin admin) throws AdminException {
 
 		Admin ad = aService.insertAdmin(admin);
 
@@ -68,7 +70,7 @@ public class AdminController {
 	}
 
 	@PutMapping("/admins")
-	public ResponseEntity<Admin> updatedAdmin(@RequestBody Admin admin ,@RequestParam String key) throws AdminException {
+	public ResponseEntity<Admin> updatedAdmin(@Valid @RequestBody Admin admin ,@RequestParam String key) throws AdminException {
 
 		Admin ad = aService.updateAdminDetails(admin, key);
 
@@ -113,7 +115,7 @@ public class AdminController {
 	}
 
 	@PutMapping("/admin/updateTripBooking/{userId}")
-	public ResponseEntity<TripBooking> updateTrip(@PathVariable("userId") Integer userId, @RequestParam String key, @RequestBody TripBooking tripBook) throws TripBookinException, LoginException, AdminException{
+	public ResponseEntity<TripBooking> updateTrip(@PathVariable("userId") Integer userId, @RequestParam String key, @Valid @RequestBody TripBooking tripBook) throws TripBookinException, LoginException, AdminException{
 		
 		TripBooking trip = tbService.updateTripBooking(tripBook, userId, key);
 		

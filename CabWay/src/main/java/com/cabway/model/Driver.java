@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,6 +12,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -35,11 +39,15 @@ public class Driver extends AbstractUser{
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer driverId;
 	
+	@NotNull
+	@Column(unique = true)
 	private String licenseNo;
 	
 	@Embedded
 	private Cab cab;
 	
+	@Max(value=5,message = "Rating can not be more than 5")
+	@Min(value=0,message = "Rating can not be less than 0")
 	private Float rating;
 	
 	@JsonIgnore
