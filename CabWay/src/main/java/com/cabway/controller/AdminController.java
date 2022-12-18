@@ -23,9 +23,11 @@ import com.cabway.exceptions.CustomerException;
 import com.cabway.exceptions.DriverException;
 import com.cabway.exceptions.LoginException;
 import com.cabway.model.Admin;
+import com.cabway.model.Cab;
 import com.cabway.model.Customer;
 import com.cabway.model.Driver;
 import com.cabway.services.AdminService;
+import com.cabway.services.CabServices;
 import com.cabway.services.CustomerService;
 import com.cabway.services.DriverServices;
 import com.cabway.services.TripBookingService;
@@ -46,8 +48,14 @@ public class AdminController {
 	@Autowired
 	private TripBookingService tbService;
 	
+
+	
+	@Autowired
+	private CabServices cabService;
+
 	@Autowired
 	private DriverServices driverService;
+
 
 
 	@PostMapping("/admins")
@@ -169,6 +177,23 @@ public class AdminController {
 		
 	}
 	
+
+	@GetMapping("/admins/viewCabByType/{carType}")
+	public ResponseEntity<List<Cab>> viewCabsOfType(@PathVariable("carType") String carType, @RequestParam String key) throws DriverException, LoginException{
+		
+		List<Cab> cabs = cabService.viewCabsOfType(carType);
+		
+		return new ResponseEntity<List<Cab>>(cabs,HttpStatus.OK);
+		
+	}
+	
+	@GetMapping("/admins/countCabsOfType/{carType}")
+	public ResponseEntity<Integer> countCabsOfType(@PathVariable("carType") String carType, @RequestParam String key) throws DriverException, LoginException{
+		
+		Integer count = cabService.countCabsOfType(carType);
+		
+		return new ResponseEntity<Integer>(count,HttpStatus.OK);
+
 	
 	
 	@DeleteMapping("admins/deleteDriver/{driverId}")
@@ -186,6 +211,7 @@ public class AdminController {
 		Driver driver = driverService.viewDriver(driverId, key);
 		
 		return new ResponseEntity<Driver>(driver, HttpStatus.OK);
+
 		
 	}
 }

@@ -17,9 +17,11 @@ import com.cabway.exceptions.CustomerException;
 import com.cabway.exceptions.DriverException;
 import com.cabway.exceptions.LoginException;
 import com.cabway.exceptions.TripBookinException;
+import com.cabway.model.Cab;
 import com.cabway.model.Customer;
 import com.cabway.model.Driver;
 import com.cabway.model.TripBooking;
+import com.cabway.services.CabServices;
 import com.cabway.services.DriverServices;
 import com.cabway.services.TripBookingService;
 
@@ -30,6 +32,9 @@ public class DriverController {
 	
 	@Autowired
 	private TripBookingService tbService;
+	
+	@Autowired
+	private CabServices cabService;
 	
 	@PostMapping("/driver")
 	public ResponseEntity<Driver> registerDriver(@RequestBody Driver driver){
@@ -75,6 +80,15 @@ public class DriverController {
 		
 	}
 	
+
+	@PutMapping("/drivers/updateCab")
+	public ResponseEntity<Cab> updateCab(@RequestBody Cab cab, @RequestParam String key) throws DriverException, LoginException{
+		
+		Cab updatedCab = cabService.updateCab(cab);
+		
+		return new ResponseEntity<Cab>(updatedCab, HttpStatus.ACCEPTED);
+	}
+
 	
 	@PutMapping("/driver/tripbooking/bill/{customerid}")
 	public ResponseEntity<TripBooking> calculateBillHandler(@PathVariable("customerid") Integer customerid, @RequestParam String key) throws DriverException, LoginException, CustomerException, TripBookinException, AdminException{
@@ -84,5 +98,5 @@ public class DriverController {
 		return new ResponseEntity<TripBooking>(trip, HttpStatus.OK);
 		
 	}
-	
+
 }
