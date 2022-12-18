@@ -41,10 +41,10 @@ public class TripBooking {
 	@ManyToOne
 	private Driver driver;
 	
-	@NotNull(message = "This field cannot be null")
+//	@NotNull(message = "This field cannot be null")
 	private String fromLocation;
 	
-	@NotNull(message = "This field cannot be null")
+//	@NotNull(message = "This field cannot be null")
 	private String toLocation;
 	
 	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss", shape = JsonFormat.Shape.STRING)
@@ -55,7 +55,7 @@ public class TripBooking {
 	
 	private String status;
 	
-	@NotNull(message = "This field cannot be null")
+//	@NotNull(message = "This field cannot be null")
 	private Float distanceInKm;
 	
 	private Float bill;

@@ -141,7 +141,7 @@ public class AdminServiceImpl implements AdminService {
 	}
 
 	@Override
-	public Set<TripBooking> getTripsDatewise(Date date, String key)
+	public Set<TripBooking> getTripsDatewise(LocalDate date, String key)
 			throws CustomerException, TripBookinException, AdminException {
 
 		CurrentSession adminLogin = csDao.findByUuid(key);
@@ -158,9 +158,11 @@ public class AdminServiceImpl implements AdminService {
 
 				for (TripBooking tb : trips) {
 
-					Instant instant1 = tb.getFromDateTime().atZone(ZoneId.systemDefault()).toInstant();
-					Date startdate = Date.from(instant1);
-
+//					Instant instant1 = tb.getFromDateTime().atZone(ZoneId.systemDefault()).toInstant();
+//					Date startdate = Date.from(instant1);
+					
+					LocalDate startdate = tb.getFromDateTime().toLocalDate();
+					
 					if (startdate.equals(date)) {
 						dateWiseTrips.add(tb);
 					}
@@ -198,11 +200,9 @@ public class AdminServiceImpl implements AdminService {
 
 				for (TripBooking tb : trips) {
 
-					Instant instant1 = tb.getFromDateTime().atZone(ZoneId.systemDefault()).toInstant();
-					LocalDate startdate = LocalDate.from(instant1);
-
-					Instant instant2 = tb.getFromDateTime().atZone(ZoneId.systemDefault()).toInstant();
-					LocalDate enddate = LocalDate.from(instant2);
+					LocalDate startdate = tb.getFromDateTime().toLocalDate();
+					
+					LocalDate enddate = tb.getToDateTime().toLocalDate();
 
 					if (startdate.isEqual(fromDate) && enddate.isEqual(toDate)) {
 

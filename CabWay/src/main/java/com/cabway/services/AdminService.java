@@ -28,7 +28,7 @@ public interface AdminService {
 	
 	public List<TripBooking> getTripsByCustomerId(Integer customerId,String key)throws CustomerException,TripBookinException,AdminException;
 	
-	public Set<TripBooking> getTripsDatewise(Date date,String key)throws CustomerException,TripBookinException,AdminException;
+	public Set<TripBooking> getTripsDatewise(LocalDate d,String key)throws CustomerException,TripBookinException,AdminException;
 	 
 	public Set<TripBooking> getAllTripsForDays(Integer customerId,LocalDate fromDate, LocalDate toDate, String key)throws CustomerException,TripBookinException,AdminException;
 
