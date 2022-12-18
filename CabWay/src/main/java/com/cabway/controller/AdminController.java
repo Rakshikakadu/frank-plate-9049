@@ -19,10 +19,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.cabway.exceptions.AdminException;
 
 import com.cabway.exceptions.CustomerException;
+import com.cabway.exceptions.DriverException;
 import com.cabway.exceptions.LoginException;
 import com.cabway.model.Admin;
+import com.cabway.model.Cab;
 import com.cabway.model.Customer;
 import com.cabway.services.AdminService;
+import com.cabway.services.CabServices;
 import com.cabway.services.CustomerService;
 import com.cabway.services.TripBookingService;
 
@@ -43,7 +46,8 @@ public class AdminController {
 	private TripBookingService tbService;
 	
 	
-
+	@Autowired
+	private CabServices cabService;
 
 	@PostMapping("/admins")
 	public ResponseEntity<Admin> insertAdmin(@RequestBody Admin admin) throws AdminException {
@@ -143,4 +147,21 @@ public class AdminController {
 		
 	}
 	
+	@GetMapping("/admins/viewCabByType/{carType}")
+	public ResponseEntity<List<Cab>> viewCabsOfType(@PathVariable("carType") String carType, @RequestParam String key) throws DriverException, LoginException{
+		
+		List<Cab> cabs = cabService.viewCabsOfType(carType);
+		
+		return new ResponseEntity<List<Cab>>(cabs,HttpStatus.OK);
+		
+	}
+	
+	@GetMapping("/admins/countCabsOfType/{carType}")
+	public ResponseEntity<Integer> countCabsOfType(@PathVariable("carType") String carType, @RequestParam String key) throws DriverException, LoginException{
+		
+		Integer count = cabService.countCabsOfType(carType);
+		
+		return new ResponseEntity<Integer>(count,HttpStatus.OK);
+		
+	}
 }
