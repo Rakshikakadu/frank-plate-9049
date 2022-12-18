@@ -44,8 +44,8 @@ public class DriverController {
 		return new ResponseEntity<Driver>(registeredDriver, HttpStatus.ACCEPTED);
 	}
 	
-	@PostMapping("/updateDriver")
-	public ResponseEntity<Driver> updateCustomer(@RequestBody Driver driver, @RequestParam String key){
+	@PutMapping("/updateDriver")
+	public ResponseEntity<Driver> updateDriver(@RequestBody Driver driver, @RequestParam String key){
 		
 		Driver updatedDriver = driverService.updateDriver(driver, key);
 		
@@ -54,11 +54,11 @@ public class DriverController {
 	}
 	
 	@DeleteMapping("/deleteDriver/{driverId}")
-	public ResponseEntity<Driver> deleteCustomer(@PathVariable("driverId") Integer driverId, @RequestParam String key) throws DriverException{
+	public ResponseEntity<Driver> deleteDriver(@PathVariable("driverId") Integer driverId, @RequestParam String key) throws DriverException{
 		
-		Driver deletedCustomer = driverService.deleteDriver(driverId, key);
+		Driver deletedDriver = driverService.deleteDriver(driverId, key);
 		
-		return new ResponseEntity<Driver>(deletedCustomer, HttpStatus.OK);
+		return new ResponseEntity<Driver>(deletedDriver, HttpStatus.OK);
 		
 	}
 	
@@ -80,6 +80,7 @@ public class DriverController {
 		
 	}
 	
+
 	@PutMapping("/drivers/updateCab")
 	public ResponseEntity<Cab> updateCab(@RequestBody Cab cab, @RequestParam String key) throws DriverException, LoginException{
 		
@@ -87,4 +88,15 @@ public class DriverController {
 		
 		return new ResponseEntity<Cab>(updatedCab, HttpStatus.ACCEPTED);
 	}
+
+	
+	@PutMapping("/driver/tripbooking/bill/{customerid}")
+	public ResponseEntity<TripBooking> calculateBillHandler(@PathVariable("customerid") Integer customerid, @RequestParam String key) throws DriverException, LoginException, CustomerException, TripBookinException, AdminException{
+		
+		TripBooking trip = tbService.calculateBill(customerid, key);
+		
+		return new ResponseEntity<TripBooking>(trip, HttpStatus.OK);
+		
+	}
+
 }

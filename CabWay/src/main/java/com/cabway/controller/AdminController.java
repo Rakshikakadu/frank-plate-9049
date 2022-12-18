@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.cabway.exceptions.AdminException;
 
@@ -24,9 +25,11 @@ import com.cabway.exceptions.LoginException;
 import com.cabway.model.Admin;
 import com.cabway.model.Cab;
 import com.cabway.model.Customer;
+import com.cabway.model.Driver;
 import com.cabway.services.AdminService;
 import com.cabway.services.CabServices;
 import com.cabway.services.CustomerService;
+import com.cabway.services.DriverServices;
 import com.cabway.services.TripBookingService;
 
 import com.cabway.exceptions.TripBookinException;
@@ -45,9 +48,15 @@ public class AdminController {
 	@Autowired
 	private TripBookingService tbService;
 	
+
 	
 	@Autowired
 	private CabServices cabService;
+
+	@Autowired
+	private DriverServices driverService;
+
+
 
 	@PostMapping("/admins")
 	public ResponseEntity<Admin> insertAdmin(@RequestBody Admin admin) throws AdminException {
@@ -129,24 +138,46 @@ public class AdminController {
 		
 		return new ResponseEntity<List<TripBooking>>(customerTrips, HttpStatus.ACCEPTED);
 	}
-//	
-//	@GetMapping("/admins/tripbookings/{date}")
-//	public ResponseEntity<Set<TripBooking>> getTripsDateWise(@PathVariable("date") Date date, String key) throws CustomerException, TripBookinException, AdminException{
-//		
-//		Set<TripBooking> tripsByDate = aService.getTripsDatewise(date, key);
-//		
-//		return new ResponseEntity<Set<TripBooking>>(tripsByDate, HttpStatus.ACCEPTED);
-//	}
-
-	@PutMapping("/admins/tripbooking/bill/{tbId}")
-	public ResponseEntity<TripBooking> generateBill(@PathVariable("tbId") Integer tripBookingId, @RequestParam String key) throws CustomerException, TripBookinException, LoginException, AdminException{
+	
+	@GetMapping("/admins/tripbookings/datewise/{date}")
+	public ResponseEntity<Set<TripBooking>> getTripsDateWise(@PathVariable("date") Date date, String key) throws CustomerException, TripBookinException, AdminException{
 		
-		TripBooking trip = tbService.calculateBill(tripBookingId, key);
+		Set<TripBooking> tripsByDate = aService.getTripsDatewise(date, key);
+		
+		return new ResponseEntity<Set<TripBooking>>(tripsByDate, HttpStatus.ACCEPTED);
+	}
+	
+	@GetMapping("/admins/tripbookings/datewise/{cid}/{sdate}/{edate}")
+	public ResponseEntity<Set<TripBooking>> getAllTripsForDays(@PathVariable("cid") Integer customerId, @PathVariable("sdate") LocalDate sdate, @PathVariable("edate") LocalDate edate,String key) throws CustomerException, TripBookinException, AdminException{
+		
+		Set<TripBooking> tripsByDate = aService.getAllTripsForDays(customerId, sdate, edate, key);
+				
+		
+		return new ResponseEntity<Set<TripBooking>>(tripsByDate, HttpStatus.ACCEPTED);
+	}
+
+	
+	@GetMapping("/admins/bestdrivers")
+	public ResponseEntity<List<Driver>> viewBestDriver(@RequestParam String key){
+		
+		List<Driver> bestDrivers = driverService.viewBestDriver(key);
+		
+		return new ResponseEntity<List<Driver>>(bestDrivers, HttpStatus.OK);
+		
+	}
+	
+	
+	
+	@PutMapping("/admins/tripbooking/bill/{cid}")
+	public ResponseEntity<TripBooking> generateBill(@PathVariable("cid") Integer customerId, @RequestParam String key) throws CustomerException, TripBookinException, LoginException, AdminException{
+		
+		TripBooking trip = tbService.calculateBill(customerId, key);
 		
 		return new ResponseEntity<TripBooking>(trip, HttpStatus.ACCEPTED);
 		
 	}
 	
+
 	@GetMapping("/admins/viewCabByType/{carType}")
 	public ResponseEntity<List<Cab>> viewCabsOfType(@PathVariable("carType") String carType, @RequestParam String key) throws DriverException, LoginException{
 		
@@ -162,6 +193,25 @@ public class AdminController {
 		Integer count = cabService.countCabsOfType(carType);
 		
 		return new ResponseEntity<Integer>(count,HttpStatus.OK);
+
+	
+	
+	@DeleteMapping("admins/deleteDriver/{driverId}")
+	public ResponseEntity<Driver> deleteDriver(@PathVariable("driverId") Integer driverId, @RequestParam String key) throws DriverException{
+		
+		Driver deletedDriver = driverService.deleteDriver(driverId, key);
+		
+		return new ResponseEntity<Driver>(deletedDriver, HttpStatus.OK);
+		
+	}
+	
+	@GetMapping("admins/driver/{driverId}")
+	public ResponseEntity<Driver> viewDriver(@PathVariable("driverId") Integer driverId, @RequestParam String key) throws DriverException, LoginException{
+		
+		Driver driver = driverService.viewDriver(driverId, key);
+		
+		return new ResponseEntity<Driver>(driver, HttpStatus.OK);
+
 		
 	}
 }
