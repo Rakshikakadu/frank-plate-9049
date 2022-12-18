@@ -16,11 +16,15 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 import lombok.Value;
 
-@Data
+//@Data
+@Getter
+@Setter
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
@@ -39,7 +43,7 @@ public class Driver extends AbstractUser{
 	private Float rating;
 	
 	@JsonIgnore
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "driver")
+	@OneToMany(mappedBy = "driver")
 	private Set<TripBooking> tripBookings = new HashSet<>();
 	
 	public Driver(String userName, String password, String address, String mobileNo, String email, Integer driverId,

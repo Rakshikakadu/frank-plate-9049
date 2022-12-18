@@ -81,6 +81,15 @@ public class AdminController {
 		
 	}
 	
+	@GetMapping("/admins/customer/{cid}")
+	public ResponseEntity<Customer> getCustomerById(@PathVariable("cid") Integer customerId, @RequestParam String key) throws CustomerException, LoginException{
+		
+		Customer customer = customerService.getCustomerById(customerId, key);
+		
+		return new ResponseEntity<Customer>(customer, HttpStatus.OK);
+		
+	}
+	
 	@DeleteMapping("/admins/deletetripBooking/{tbid}/{uid}")
 	public ResponseEntity<TripBooking> deletetripBooking(@PathVariable("tbid") Integer tbid,@PathVariable("uid") Integer uid,@RequestParam String key) throws TripBookinException, LoginException, AdminException{
 		
@@ -100,30 +109,38 @@ public class AdminController {
 	}
 	
 	@GetMapping("/admins/customers/tripbookings")
-	public ResponseEntity<Set<TripBooking>> getAllTrips(@RequestParam String key) throws CustomerException, AdminException{
+	public ResponseEntity<List<TripBooking>> getAllTrips(@RequestParam String key) throws CustomerException, AdminException{
 		
-		Set<TripBooking> customersTrips = aService.getAllTripsOfCustomers(key);
+		List<TripBooking> customersTrips = aService.getAllTripsOfCustomers(key);
 		
 		
-		return new ResponseEntity<Set<TripBooking>>(customersTrips, HttpStatus.ACCEPTED);
+		return new ResponseEntity<List<TripBooking>>(customersTrips, HttpStatus.ACCEPTED);
 	}
 	
 	@GetMapping("/admins/customer/tripbookings/{cid}")
-	public ResponseEntity<Set<TripBooking>> getAllTripsOfCustomers(@PathVariable("cid") Integer customerId,  @RequestParam String key) throws CustomerException, AdminException, TripBookinException{
+	public ResponseEntity<List<TripBooking>> getAllTripsOfCustomers(@PathVariable("cid") Integer customerId,  @RequestParam String key) throws CustomerException, AdminException, TripBookinException, LoginException{
 		
-		Set<TripBooking> customerTrips = aService.getTripsByCustomerId(customerId, key);
+		List<TripBooking> customerTrips = aService.getTripsByCustomerId(customerId, key);
 		
 		
-		return new ResponseEntity<Set<TripBooking>>(customerTrips, HttpStatus.ACCEPTED);
+		return new ResponseEntity<List<TripBooking>>(customerTrips, HttpStatus.ACCEPTED);
 	}
-	
-	@GetMapping("/admins/tripbookings/{date}")
-	public ResponseEntity<Set<TripBooking>> getTripsDateWise(@PathVariable("date") Date date, String key) throws CustomerException, TripBookinException, AdminException{
-		
-		Set<TripBooking> tripsByDate = aService.getTripsDatewise(date, key);
-		
-		return new ResponseEntity<Set<TripBooking>>(tripsByDate, HttpStatus.ACCEPTED);
-	}
+//	
+//	@GetMapping("/admins/tripbookings/{date}")
+//	public ResponseEntity<Set<TripBooking>> getTripsDateWise(@PathVariable("date") Date date, String key) throws CustomerException, TripBookinException, AdminException{
+//		
+//		Set<TripBooking> tripsByDate = aService.getTripsDatewise(date, key);
+//		
+//		return new ResponseEntity<Set<TripBooking>>(tripsByDate, HttpStatus.ACCEPTED);
+//	}
 
+	@PutMapping("/admins/tripbooking/bill/{tbId}")
+	public ResponseEntity<TripBooking> generateBill(@PathVariable("tbId") Integer tripBookingId, @RequestParam String key) throws CustomerException, TripBookinException, LoginException, AdminException{
+		
+		TripBooking trip = tbService.calculateBill(tripBookingId, key);
+		
+		return new ResponseEntity<TripBooking>(trip, HttpStatus.ACCEPTED);
+		
+	}
 	
 }

@@ -21,18 +21,18 @@ public interface AdminService {
 	
 	public Admin deleteAdminDetails(Integer adminId, String key)throws AdminException;
 	
-	public Set<TripBooking> getAllTripsOfCustomers(String key)throws CustomerException,AdminException;
+	public List<TripBooking> getAllTripsOfCustomers(String key)throws CustomerException,AdminException;
 	
 	//public List<TripBooking> getTripsCabwise()throws CabException;
 	
-	public Set<TripBooking> getTripsByCustomerId(Integer customerId,String key)throws CustomerException,TripBookinException,AdminException;
-	
-	public Set<TripBooking> getTripsDatewise(Date date,String key)throws CustomerException,TripBookinException,AdminException;
-	
-	//public Set<TripBooking> getAllTripsForDays(Integer customerId,LocalDateTime fromDate, LocalDateTime toDate, String key)throws CustomerException,TripBookinException,AdminException;
-
-	Set<TripBooking> getAllTripsForDays(Integer customerId, LocalDate fromDate, LocalDate toDate, String key)
-			throws CustomerException, TripBookinException, AdminException;
+	public List<TripBooking> getTripsByCustomerId(Integer customerId,String key)throws CustomerException,TripBookinException,AdminException;
+//	
+//	public Set<TripBooking> getTripsDatewise(Date date,String key)throws CustomerException,TripBookinException,AdminException;
+//	
+//	//public Set<TripBooking> getAllTripsForDays(Integer customerId,LocalDateTime fromDate, LocalDateTime toDate, String key)throws CustomerException,TripBookinException,AdminException;
+//
+//	Set<TripBooking> getAllTripsForDays(Integer customerId, LocalDate fromDate, LocalDate toDate, String key)
+//			throws CustomerException, TripBookinException, AdminException;
 	
 	
 

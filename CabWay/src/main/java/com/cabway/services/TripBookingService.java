@@ -11,7 +11,7 @@ import com.cabway.model.TripBooking;
 
 public interface TripBookingService {
 	
-	public TripBooking insertTripBooking(TripBooking tripBook, String key)throws TripBookinException, LoginException;
+	public TripBooking insertTripBooking(TripBooking tripBook, Integer customerId, String key)throws TripBookinException, LoginException;
 	
 	public TripBooking updateTripBooking(TripBooking tripBook,Integer userId, String key)throws TripBookinException, LoginException, AdminException;
 	
@@ -19,7 +19,9 @@ public interface TripBookingService {
 	
 	public Set<TripBooking> viewAllTripsOfCustomerById(Integer customerId,String key)throws TripBookinException,CustomerException, LoginException;
 	
-	public TripBooking calculateBill(Integer customerId, String key)throws TripBookinException,CustomerException, LoginException, AdminException;
+	public TripBooking calculateBill(Integer tripBookingId, String key)throws TripBookinException,CustomerException, LoginException, AdminException;
+	
+//	public TripBooking calculateBill(Integer customerId, String key)throws TripBookinException,CustomerException, LoginException, AdminException;
 	
 	
 }

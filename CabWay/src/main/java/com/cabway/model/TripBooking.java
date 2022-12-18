@@ -13,10 +13,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
-@Data
+//@Data
+@Getter
+@Setter
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
@@ -27,9 +31,12 @@ public class TripBooking {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer tripBookingId;
 	
-	private Integer customerId;
+//	private Integer customerId;
 	
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne
+	private Customer customer;
+	
+	@ManyToOne
 	private Driver driver;
 	
 	private String fromLocation;
