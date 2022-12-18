@@ -17,12 +17,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cabway.exceptions.AdminException;
 import com.cabway.exceptions.CustomerException;
+import com.cabway.exceptions.DriverException;
 import com.cabway.exceptions.LoginException;
 import com.cabway.exceptions.TripBookinException;
 import com.cabway.model.Customer;
 import com.cabway.model.CustomerValidationDTO;
+import com.cabway.model.Driver;
 import com.cabway.model.TripBooking;
 import com.cabway.services.CustomerService;
+import com.cabway.services.DriverServices;
 import com.cabway.services.TripBookingService;
 
 @RestController
@@ -33,6 +36,9 @@ public class CustomerController {
 	
 	@Autowired
 	private TripBookingService tripbookService;
+	
+	@Autowired
+	private DriverServices driverService;
 	
 	@PostMapping("/customer")
 	public ResponseEntity<Customer> registerCustomer(@RequestBody Customer customer){
@@ -113,5 +119,13 @@ public class CustomerController {
 		
 		
 		return new ResponseEntity<Set<TripBooking>>(customerTrips, HttpStatus.ACCEPTED);
+	}
+	
+	@PutMapping("/customer/ratedriver")
+	public ResponseEntity<Driver> rateDriver(@RequestBody Driver driver, @RequestParam String key) throws DriverException, LoginException{
+		
+		Driver ratedriver = driverService.rateDriverByCustomer(driver, key);
+		
+		return new ResponseEntity<Driver>(ratedriver, HttpStatus.ACCEPTED);
 	}
 }

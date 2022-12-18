@@ -16,4 +16,6 @@ public interface DriverServices {
 	public List<Driver> viewBestDriver(String key) throws DriverException;
 
 	public Driver viewDriver(Integer driverId,String key) throws DriverException, LoginException ;
+	
+	public Driver rateDriverByCustomer(Driver driver,String key)throws DriverException, LoginException;
 }
