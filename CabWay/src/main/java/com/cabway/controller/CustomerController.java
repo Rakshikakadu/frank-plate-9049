@@ -68,13 +68,13 @@ public class CustomerController {
 		
 	}
 	
-	@GetMapping("/customers")
-	public ResponseEntity<List<Customer>> getAllCustomer(@RequestParam String key) throws CustomerException, LoginException{
-		
-		List<Customer> customers = customerService.getAllCustomers(key);
-		
-		return new ResponseEntity<List<Customer>>(customers, HttpStatus.OK);
-	}
+//	@GetMapping("/customers")
+//	public ResponseEntity<List<Customer>> getAllCustomer(@RequestParam String key) throws CustomerException, LoginException{
+//		
+//		List<Customer> customers = customerService.getAllCustomers(key);
+//		
+//		return new ResponseEntity<List<Customer>>(customers, HttpStatus.OK);
+//	}
 	
 	@GetMapping("/customers/{customerId}")
 	public ResponseEntity<Customer> getCustomerById(@PathVariable("customerId") Integer customerId, @RequestParam String key) throws CustomerException, LoginException{

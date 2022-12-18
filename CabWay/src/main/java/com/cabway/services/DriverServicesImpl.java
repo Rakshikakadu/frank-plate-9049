@@ -165,7 +165,7 @@ public class DriverServicesImpl implements DriverServices {
 			Driver ratedriver = driverDao.findById(driver.getDriverId())
 					.orElseThrow(() -> new DriverException("No driver found"));
 
-			if (ratedriver.getRating() != null) {
+			if (ratedriver.getRating() != 0) {
 
 				Float newRating = (driver.getRating() + ratedriver.getRating()) / 2;
 

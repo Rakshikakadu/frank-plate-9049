@@ -59,15 +59,16 @@ public class TripBookingServiceImpl implements TripBookingService {
 					Customer customer = cDao.findById(customerId)
 							.orElseThrow(() -> new CustomerException("Invalid customer id"));
 
-					customer.getTripBookings().add(tripBook);
 
 					tripBook.setStatus("Booked");
 
 					tripBook.setCustomer(customer);
 
-					cDao.save(customer);
-
 					tbDao.save(tripBook);
+					
+					customer.getTripBookings().add(tripBook);
+					
+					cDao.save(customer);
 
 					return tripBook;
 				} else {
@@ -282,7 +283,7 @@ public class TripBookingServiceImpl implements TripBookingService {
 			if (!trips.isEmpty()) {
 				for (TripBooking trip : trips) {
 
-					if (trip.getStatus().equals("completed") && trip.getBill() == null) {
+					if (trip.getStatus().equals("completed") && trip.getBill() == 0) {
 
 						Float updateBill = trip.getDriver().getCab().getPerKmRate() * trip.getDistanceInKm();
 

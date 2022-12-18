@@ -39,7 +39,7 @@ public class Driver extends AbstractUser{
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer driverId;
 	
-	@NotNull
+//	@NotNull
 	@Column(unique = true)
 	private String licenseNo;
 	

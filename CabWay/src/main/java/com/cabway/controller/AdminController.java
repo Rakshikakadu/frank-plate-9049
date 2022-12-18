@@ -142,17 +142,23 @@ public class AdminController {
 	}
 	
 	@GetMapping("/admins/tripbookings/datewise/{date}")
-	public ResponseEntity<Set<TripBooking>> getTripsDateWise(@PathVariable("date") Date date, String key) throws CustomerException, TripBookinException, AdminException{
+	public ResponseEntity<Set<TripBooking>> getTripsDateWise(@PathVariable("date") String date, String key) throws CustomerException, TripBookinException, AdminException{
 		
-		Set<TripBooking> tripsByDate = aService.getTripsDatewise(date, key);
+		LocalDate d = LocalDate.parse(date);
+		
+		Set<TripBooking> tripsByDate = aService.getTripsDatewise(d, key);
 		
 		return new ResponseEntity<Set<TripBooking>>(tripsByDate, HttpStatus.ACCEPTED);
 	}
 	
 	@GetMapping("/admins/tripbookings/datewise/{cid}/{sdate}/{edate}")
-	public ResponseEntity<Set<TripBooking>> getAllTripsForDays(@PathVariable("cid") Integer customerId, @PathVariable("sdate") LocalDate sdate, @PathVariable("edate") LocalDate edate,String key) throws CustomerException, TripBookinException, AdminException{
+	public ResponseEntity<Set<TripBooking>> getAllTripsForDays(@PathVariable("cid") Integer customerId, @PathVariable("sdate") String sdate, @PathVariable("edate") String edate,String key) throws CustomerException, TripBookinException, AdminException{
 		
-		Set<TripBooking> tripsByDate = aService.getAllTripsForDays(customerId, sdate, edate, key);
+		LocalDate startDate = LocalDate.parse(sdate);
+		
+		LocalDate endDate = LocalDate.parse(edate);
+		
+		Set<TripBooking> tripsByDate = aService.getAllTripsForDays(customerId, startDate, endDate, key);
 				
 		
 		return new ResponseEntity<Set<TripBooking>>(tripsByDate, HttpStatus.ACCEPTED);
