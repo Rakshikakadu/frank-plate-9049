@@ -15,8 +15,10 @@ import org.springframework.stereotype.Service;
 
 import com.cabway.exceptions.AdminException;
 import com.cabway.exceptions.CustomerException;
+import com.cabway.exceptions.DriverException;
 import com.cabway.exceptions.TripBookinException;
 import com.cabway.model.Admin;
+import com.cabway.model.Cab;
 import com.cabway.model.CurrentSession;
 import com.cabway.model.Customer;
 import com.cabway.model.TripBooking;
@@ -36,7 +38,7 @@ public class AdminServiceImpl implements AdminService {
 
 	@Autowired
 	private CustomerDAO cDao;
-	
+
 	@Autowired
 	private TripBookingDao tbDao;
 
@@ -102,14 +104,6 @@ public class AdminServiceImpl implements AdminService {
 
 			if (customerTrips.size() > 0) {
 
-//				Set<TripBooking> customerTrips = new HashSet<>();
-//
-//				for (Customer c : customers) {
-//
-//					customerTrips.addAll(c.getTripBookings());
-//
-//				}
-				
 				return customerTrips;
 			} else {
 				throw new CustomerException("No trip is present.");
@@ -120,121 +114,147 @@ public class AdminServiceImpl implements AdminService {
 	}
 
 	@Override
-	public List<TripBooking> getTripsByCustomerId(Integer customerId, String key) throws CustomerException, TripBookinException, AdminException {
-		
+	public List<TripBooking> getTripsByCustomerId(Integer customerId, String key)
+			throws CustomerException, TripBookinException, AdminException {
+
 		CurrentSession adminLogin = csDao.findByUuid(key);
 
 		if (adminLogin == null) {
 			throw new AdminException("Please provide a valid key to get all trips of customers");
-		}else {
-			
-			Customer c = cDao.findById(customerId).orElseThrow(() -> new CustomerException("Customer not find with cid :"+customerId));
-			
+		} else {
+
+			Customer c = cDao.findById(customerId)
+					.orElseThrow(() -> new CustomerException("Customer not find with cid :" + customerId));
+
 			Set<TripBooking> customertrips = c.getTripBookings();
-			
+
 			List<TripBooking> customerTrips = new ArrayList<>(customertrips);
-			
-			if(customerTrips.size()>0) {
+
+			if (customerTrips.size() > 0) {
 				return customerTrips;
-			}else {
-				throw new TripBookinException("No trips found for customer "+ customerId);
+			} else {
+				throw new TripBookinException("No trips found for customer " + customerId);
 			}
-			
-			
+
 		}
-		
+
 	}
 
-//	@Override
-//	public Set<TripBooking> getTripsDatewise(Date date, String key)throws CustomerException, TripBookinException, AdminException {
-//		
-//		CurrentSession adminLogin = csDao.findByUuid(key);
-//
-//		if (adminLogin == null) {
-//			throw new AdminException("Please provide a valid key to get all trips of customers");
-//		}else {
-//			
-//			List<Customer> customers = cDao.findAll();
-//			
-//			if(customers.size()>0) {
-//				
-//				Set<TripBooking> dateWiseTrips = new HashSet<>();
-//				
-//				for(Customer c : customers) {
-//					
-//					Set<TripBooking> trips = c.getTripBookings();
-//					
-//					for(TripBooking tb : trips) {
-//						
-//						Instant instant1 = tb.getFromDateTime().atZone(ZoneId.systemDefault()).toInstant();
-//						Date startdate = Date.from(instant1);
-//						
-//						if(startdate == date) {
-//							dateWiseTrips.add(tb);
-//						}
-//						
-//					}
-//					
-//				}
-//				
-//			}else {
-//				throw new CustomerException("No one customer is present");
-//			}
-//			
-//		}
-//		
-//		
-//		return null;
-//	}
-//
-//	@Override
-//	public Set<TripBooking> getAllTripsForDays(Integer customerId, LocalDate fromDate, LocalDate toDate, String key)throws CustomerException, TripBookinException, AdminException {
-//		
-//		CurrentSession adminLogin = csDao.findByUuid(key);
-//
-//		if (adminLogin == null) {
-//			throw new AdminException("Please provide a valid key to get all trips of customers");
-//		}else {
-//			
-//			List<Customer> customers = cDao.findAll();
-//			
-//			if(customers.size()>0) {
-//				
-//				Set<TripBooking> getAllTrips = new HashSet<>();
-//				
-//				for(Customer c : customers) {
-//					
-//					Set<TripBooking> trips = c.getTripBookings();
-//					
-//					for(TripBooking tb : trips) {
-//						
-//						Instant instant1 = tb.getFromDateTime().atZone(ZoneId.systemDefault()).toInstant();
-//						LocalDate startdate = LocalDate.from(instant1);
-//						
-//						Instant instant2 = tb.getFromDateTime().atZone(ZoneId.systemDefault()).toInstant();
-//						LocalDate enddate = LocalDate.from(instant2);
-//						
-//						if(startdate.isEqual(toDate) && enddate.isEqual(toDate)) {
-//							
-//							getAllTrips.add(tb);
-//							
-//						}
-//						
-//					}
-//					
-//				}
-//				
-//			}else {
-//				throw new CustomerException("No one customer is present");
-//			}
-//			
-//		}
-//		
-//		return null;
-//	}
+	@Override
+	public Set<TripBooking> getTripsDatewise(Date date, String key)
+			throws CustomerException, TripBookinException, AdminException {
 
-	
+		CurrentSession adminLogin = csDao.findByUuid(key);
 
-	
+		if (adminLogin == null) {
+			throw new AdminException("Please provide a valid key to get all trips of customers");
+		} else {
+
+			List<TripBooking> trips = tbDao.findAll();
+
+			if (trips.size() > 0) {
+
+				Set<TripBooking> dateWiseTrips = new HashSet<>();
+
+				for (TripBooking tb : trips) {
+
+					Instant instant1 = tb.getFromDateTime().atZone(ZoneId.systemDefault()).toInstant();
+					Date startdate = Date.from(instant1);
+
+					if (startdate.equals(date)) {
+						dateWiseTrips.add(tb);
+					}
+
+				}
+
+				if (dateWiseTrips.size() == 0) {
+					throw new TripBookinException("No trips present found for date" + date);
+				} else {
+					return dateWiseTrips;
+				}
+
+			} else {
+				throw new TripBookinException("Trips not available. ");
+			}
+
+		}
+
+	}
+
+	@Override
+	public Set<TripBooking> getAllTripsForDays(Integer customerId, LocalDate fromDate, LocalDate toDate, String key)
+			throws CustomerException, TripBookinException, AdminException {
+		CurrentSession adminLogin = csDao.findByUuid(key);
+
+		if (adminLogin == null) {
+			throw new AdminException("Please provide a valid key to get all trips of customers");
+		} else {
+
+			List<TripBooking> trips = tbDao.findAll();
+
+			if (trips.size() > 0) {
+
+				Set<TripBooking> allTrips = new HashSet<>();
+
+				for (TripBooking tb : trips) {
+
+					Instant instant1 = tb.getFromDateTime().atZone(ZoneId.systemDefault()).toInstant();
+					LocalDate startdate = LocalDate.from(instant1);
+
+					Instant instant2 = tb.getFromDateTime().atZone(ZoneId.systemDefault()).toInstant();
+					LocalDate enddate = LocalDate.from(instant2);
+
+					if (startdate.isEqual(fromDate) && enddate.isEqual(toDate)) {
+
+						allTrips.add(tb);
+
+					}
+
+				}
+				if (allTrips.size() == 0) {
+					throw new TripBookinException(
+							"No trips present found for staetdate: " + fromDate + " to ennDate: " + toDate);
+				} else {
+					return allTrips;
+				}
+
+			} else {
+				throw new CustomerException("No one customer is present");
+			}
+
+		}
+
+	}
+
+	@Override
+	public List<TripBooking> getTripsCabwise(Cab cab, String key) throws DriverException, AdminException {
+		CurrentSession adminLogin = csDao.findByUuid(key);
+
+		if (adminLogin == null) {
+			throw new AdminException("Please provide a valid key to get all trips of customers");
+		} else {
+
+			List<TripBooking> cabWiseTrips = new ArrayList<>();
+
+			for (TripBooking trips : tbDao.findAll()) {
+
+				if (trips.getDriver().getCab().getCabId() == cab.getCabId()) {
+
+					cabWiseTrips.add(trips);
+
+				}
+
+			}
+
+			if (cabWiseTrips.size() == 0) {
+
+				throw new DriverException("No trips found for driver with cab " + cab.getCabId());
+
+			} else {
+				return cabWiseTrips;
+			}
+
+		}
+	}
 
 }
