@@ -1,6 +1,6 @@
 # frank-plate-9049
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/105484277/208636032-ae5be720-bb0b-4fad-ad3a-4f5aaf56001e.png" width="160" alt="animated" />
+  <img src="https://user-images.githubusercontent.com/105484277/208636032-ae5be720-bb0b-4fad-ad3a-4f5aaf56001e.png" alt="CabWay" />
 </p>
   
  #  CabWay(Online Cab Booking System)
