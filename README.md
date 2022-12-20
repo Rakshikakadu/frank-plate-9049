@@ -24,11 +24,11 @@ This application is a REST API for an Online Cab Booking Management System.Using
 
 
 ### Modules
--  Login Module
+- Login Module
 -	Admin Module
 -	Customer Module
--	Driver Management Module
--	Booking Management Module
+-	Driver Module
+-	Trip Booking Module
 
 ### Functionalities
 - Common Functionalities :- Login, Logout and registration to the system.
